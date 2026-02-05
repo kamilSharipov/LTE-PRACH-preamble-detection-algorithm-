@@ -7,18 +7,12 @@
 using namespace prach;
 
 int main() {
-    std::vector<Complex> res = generate_zc_sequence(3, 7);
-    std::vector<Complex> out(7);
+    std::vector<Complex> res = generate_zc_sequence(3, 11);
 
-    fftw_plan plan_forward = fftw_plan_dft_1d(res.size(), res.data(), out.data(),
-                                              FFTW_FORWARD, FFTW_ESTIMATE);
+    auto out = add_cyclic_prefix(res, 5);
 
-    fftw_execute(plan_forward);
-
-    auto res2 = add_cyclic_prefix(res, 3);
-
-    for (auto el: res2) {
-        std::cout << el[0] << " " << el[1] << 'j' << "\n";
+    for (auto el: out) {
+        std::cout << el << "\n";
     }
 
     return 0;
