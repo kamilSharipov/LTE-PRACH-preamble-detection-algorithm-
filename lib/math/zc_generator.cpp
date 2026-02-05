@@ -1,6 +1,7 @@
 #include "zc_generator.hpp"
 
 #include <cmath>
+#include <stdexcept>
 
 namespace prach {
 
@@ -13,7 +14,7 @@ std::vector<Complex> generate_zc_sequence(int u, int Nzc) {
     const double pi = acos(-1.0);
 
     for (int n = 0; n < Nzc; ++n) {
-        double phase = -pi * u * n * (n + 1) / static_cast<double>(Nzc);
+        double phase = -PI * u * n * (n + 1) / static_cast<double>(Nzc);
         seq[n][0] = cos(phase);
         seq[n][1] = sin(phase);
     }
@@ -36,5 +37,3 @@ std::vector<Complex> apply_cyclic_shift(const std::vector<Complex>& seq, int del
 }
 
 } // namespace prach
-
-
