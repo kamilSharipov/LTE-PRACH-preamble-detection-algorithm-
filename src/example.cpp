@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "zc_generator.hpp"
+#include "cprefix.hpp"
 
 using namespace prach;
 
@@ -14,7 +15,9 @@ int main() {
 
     fftw_execute(plan_forward);
 
-    for (auto el: out) {
+    auto res2 = add_cyclic_prefix(res, 3);
+
+    for (auto el: res2) {
         std::cout << el[0] << " " << el[1] << 'j' << "\n";
     }
 
