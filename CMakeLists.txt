@@ -3,20 +3,33 @@ project(PRACH)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(example
-    src/example.cpp
+add_library(prach_lib
+    lib/math/zc_generator.cpp
     lib/cprefix/cprefix.cpp
     lib/fft/fft.cpp
     lib/fft/ifft.cpp
-    lib/math/zc_generator.cpp
 )
 
-target_include_directories(example PRIVATE
-    include
-    lib/cprefix
-    lib/fft
-    lib/math
+target_include_directories(prach_lib PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/math
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/cprefix
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/fft
 )
 
-#find_package(FFTW REQUIRED)
-#target_link_libraries(example PRIVATE FFTW::fftw3)
+enable_testing()
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(tests
+    tests/test_cprefix.cpp
+)
+
+target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main)
+
+add_test(NAME tests COMMAND tests)
+
