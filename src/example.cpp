@@ -1,6 +1,7 @@
 #include "fftw3.h"
 
 #include <iostream>
+
 #include "zc_generator.hpp"
 #include "cprefix.hpp"
 
