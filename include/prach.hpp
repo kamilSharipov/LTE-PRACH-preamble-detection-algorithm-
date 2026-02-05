@@ -2,8 +2,6 @@
 
 #include <complex>
 
-#include <fftw3.h>
-
 namespace prach {
 
 const double PI = 3.14159265358979323846;
