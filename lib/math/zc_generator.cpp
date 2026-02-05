@@ -7,7 +7,7 @@ namespace prach {
 
 std::vector<Complex> generate_zc_sequence(int u, int Nzc) {
     if (u <= 0 || u >= Nzc) {
-        throw std::invalid_argument("u must be in [1, 838]");
+        throw std::invalid_argument("lib/math/zc_generator.cpp: u must be in [1, Nzc]");
     }
 
     std::vector<Complex> seq(Nzc);
