@@ -18,5 +18,5 @@ target_include_directories(example PRIVATE
     lib/math
 )
 
-find_package(FFTW REQUIRED)
-target_link_libraries(example PRIVATE FFTW::fftw3)
+#find_package(FFTW REQUIRED)
+#target_link_libraries(example PRIVATE FFTW::fftw3)

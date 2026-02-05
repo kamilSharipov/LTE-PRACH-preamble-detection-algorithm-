@@ -1,5 +1,7 @@
 #pragma once
 
+#include <complex>
+
 #include <fftw3.h>
 
 namespace prach {
@@ -9,6 +11,6 @@ const double E = 2.718281828459045;
 
 const size_t STANDART_NZC = 839;
 
-using Complex = fftw_complex;
+using Complex = std::complex<double>;
 
 } // namespace prach
