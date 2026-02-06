@@ -4,15 +4,14 @@
 
 #include "zc_generator.hpp"
 #include "cprefix.hpp"
+#include "zc_fft.property.hpp"
 
 using namespace prach;
 
 int main() {
-    std::vector<Complex> res = generate_zc_sequence(3, 11);
+    std::vector<Complex> res = dft_via_zc_property(11, 3);
 
-    auto out = add_cyclic_prefix(res, 5);
-
-    for (auto el: out) {
+    for (auto el: res) {
         std::cout << el << "\n";
     }
 
