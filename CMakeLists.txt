@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(prach_lib
     lib/math/zc_generator.cpp
+    lib/math/zc_fft_property
     lib/cprefix/cprefix.cpp
     lib/fft/fft.cpp
     lib/fft/ifft.cpp
@@ -16,6 +17,12 @@ target_include_directories(prach_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/cprefix
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/fft
 )
+
+add_executable(example
+    src/example.cpp
+)
+
+target_link_libraries(example PRIVATE prach_lib)
 
 enable_testing()
 include(FetchContent)
