@@ -45,6 +45,10 @@ std::vector<Complex> dft_via_zc_property(size_t Nzc, int u) {
 
     std::vector<Complex> result = generate_zc_sequence(new_u, Nzc);
 
+    for (auto& element: result) {
+        element *= weight;
+    }
+
     return result;
 }
 
