@@ -41,6 +41,9 @@ jobs:
           name: build-output
           path: build/
 
+      - name: Make test executable
+        run: chmod +x build/tests
+
       - name: Run tests
         working-directory: build
         run: ctest --output-on-failure --verbose
