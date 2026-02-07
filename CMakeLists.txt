@@ -49,4 +49,3 @@ add_executable(tests
 target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main)
 
 add_test(NAME tests COMMAND tests)
-

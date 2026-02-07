@@ -32,10 +32,11 @@ int modular_inverse(int a, int mod) {
 }
 
 Complex zc_dft_zero_freq(size_t Nzc, int u) {
-    std::vector<Complex> seq = generate_zc_sequence(u, Nzc);
     Complex sum = {0, 0};
 
-    for (auto element: seq) {
+    for (size_t n = 0; n < Nzc; ++n) {
+        double phase = -PI * u * n * (n + 1) / static_cast<double>(Nzc);
+        auto element = Complex(cos(phase), sin(phase));
         sum += element;
     }
 
