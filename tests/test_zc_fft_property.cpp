@@ -21,7 +21,7 @@ TEST_P(ZCFFTPropertyTest, MatchesFFTW) {
     auto x_u = generate_zc_sequence(u, Nzc);
     auto X_fftw = fft_fftw(x_u);
 
-    double eps = 1e-6;
+    double eps = 1e-7;
 
     ASSERT_TRUE(complex_vectors_near(X_fast, X_fftw, eps));
 }
