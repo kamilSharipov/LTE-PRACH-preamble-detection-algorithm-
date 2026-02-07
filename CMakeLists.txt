@@ -44,8 +44,9 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
     tests/test_cprefix.cpp
+    tests/test_zc_fft_property.cpp
 )
 
-target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main)
+target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main fftw3 m)
 
 add_test(NAME tests COMMAND tests)
