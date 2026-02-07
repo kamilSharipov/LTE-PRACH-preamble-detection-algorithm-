@@ -1,27 +1,12 @@
-#include <vector>
+#include "cprefix.hpp"
+#include "test_utils.hpp"
+
 #include <complex>
+#include <vector>
 
 #include <gtest/gtest.h>
 
-#include "cprefix.hpp"
-
 using namespace prach;
-
-bool complexVectorsNear(const std::vector<Complex>& a,
-                        const std::vector<Complex>& b,
-                        double eps = 1e-9) {
-    if (a.size() != b.size()) {
-        return false;
-    }
-
-    for (size_t i = 0; i < a.size(); ++i) {
-        if (std::abs(a[i] - b[i]) > eps) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 TEST(CPrefixTest, BasicFunctionality) {
     std::vector<Complex> signal = {{1, 0}, {2, 0}, {3, 0}};
@@ -32,14 +17,14 @@ TEST(CPrefixTest, BasicFunctionality) {
         {1, 0}, {2, 0}, {3, 0}
     };
 
-    ASSERT_TRUE(complexVectorsNear(result, expected));
+    ASSERT_TRUE(complex_vectors_near(result, expected));
 }
 
 TEST(CPrefixTest, ZeroCpLength) {
     std::vector<Complex> signal = {{1, 1}, {2, -1}, {0, 3}};
     auto result = add_cyclic_prefix(signal, 0);
 
-    EXPECT_TRUE(complexVectorsNear(result, signal));
+    EXPECT_TRUE(complex_vectors_near(result, signal));
 }
 
 TEST(CPrefixTest, CpEqualsSignalLength) {
@@ -51,7 +36,7 @@ TEST(CPrefixTest, CpEqualsSignalLength) {
         {1, 0}, {0, 1}
     };
 
-    ASSERT_TRUE(complexVectorsNear(result, expected));
+    ASSERT_TRUE(complex_vectors_near(result, expected));
 }
 
 TEST(CPrefixTest, EmptySignal) {
@@ -78,7 +63,7 @@ TEST(CPrefixTest, ComplexValues) {
         Complex(-1.0, 0.5),
         Complex(0.0, -3.0)
     };
-    ASSERT_TRUE(complexVectorsNear(result, expected));
+    ASSERT_TRUE(complex_vectors_near(result, expected));
 }
 
 TEST(CPrefixTest, LargePrachLikeCase) {

@@ -34,6 +34,10 @@ add_executable(example
 
 target_link_libraries(example PRIVATE prach_lib)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FFTW REQUIRED fftw3)
+include_directories(${FFTW_INCLUDE_DIRS})
+
 enable_testing()
 include(FetchContent)
 FetchContent_Declare(
@@ -44,8 +48,9 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
     tests/test_cprefix.cpp
+    tests/test_zc_fft_property.cpp
 )
 
-target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main)
+target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main ${FFTW_LIBRARIES})
 
 add_test(NAME tests COMMAND tests)
