@@ -1,4 +1,4 @@
-# LTE PRACH Preamble Detection & Generation Toolkit
+# LTE PRACH Preamble Generation & Detection Toolkit
 
 This project implements **generation and analysis of PRACH preambles** according to the 3GPP LTE specification (TS 36.211), with a focus on **high performance** and **accurate channel emulation** for research and development of preamble detection algorithms.
 
@@ -27,16 +27,16 @@ This is an **academic project**. It is not intended for production use, and may 
 
 ## TODO
 
-### Implement simple examples
+### 1. Implement simple examples
 
-### Detection Algorithm & Simulation Model
+### 2. Detection Algorithm & Simulation Model
 - [ ] **a.** Add additive white Gaussian noise for a given SNR.  
 - [ ] **b.** Implement preamble detection algorithm.  
 - [ ] **c.** Evaluate false alarm and miss detection probabilities.  
 - [ ] **d.** Plot probability of correct detection vs. SNR.  
 - [ ] **e.** Estimate time-of-arrival of the preamble.
 
-### Performance Under Frequency Offset
+### 3. Performance Under Frequency Offset
 - [ ] **a.** Analyze mathematically how frequency offset affects correlation peak.  
 - [ ] **b.** Plot detection probability under various frequency offsets.  
 - [ ] **c.** Investigate timing estimation bias caused by frequency offset.  
