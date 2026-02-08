@@ -20,7 +20,7 @@ TEST_P(ZCFFTPropertyTest, MatchesFFTW) {
 
     auto X_fast = dft_via_zc_property(Nzc, u);
     auto x_u = generate_zc_sequence(u, Nzc);
-    auto X_fftw = fft_fftw(x_u);
+    auto X_fftw = fft_fftw(x_u, x_u.size());
 
     double eps = 1e-7;
 
@@ -52,12 +52,12 @@ TEST(ZCFFTPropertyTest, BoundaryRootIndices) {
 
     auto X1_fast = dft_via_zc_property(Nzc, 1);
     auto x1 = generate_zc_sequence(1, Nzc);
-    auto X1_fftw = fft_fftw(x1);
+    auto X1_fftw = fft_fftw(x1, x1.size());
     EXPECT_TRUE(complex_vectors_near(X1_fast, X1_fftw, 1e-9));
 
     auto X2_fast = dft_via_zc_property(Nzc, static_cast<int>(Nzc - 1));
     auto x2 = generate_zc_sequence(static_cast<int>(Nzc - 1), Nzc);
-    auto X2_fftw = fft_fftw(x2);
+    auto X2_fftw = fft_fftw(x2, x2.size());
     EXPECT_TRUE(complex_vectors_near(X2_fast, X2_fftw, 1e-9));
 }
 
