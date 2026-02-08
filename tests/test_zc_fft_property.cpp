@@ -1,6 +1,7 @@
 #include "zc_fft.property.hpp"
 #include "zc_generator.hpp"
 #include "test_utils.hpp"
+#include "fft.hpp"
 
 #include <cmath>
 #include <complex>
