@@ -4,8 +4,7 @@
 
 namespace prach {
 
-std::vector<Complex> fft_fftw(const std::vector<Complex>& x) {
-    size_t N = x.size();
+std::vector<Complex> fft_fftw(const std::vector<Complex>& x, size_t N) {
     fftw_complex* in = fftw_alloc_complex(N);
     fftw_complex* out = fftw_alloc_complex(N);
 

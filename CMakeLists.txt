@@ -13,30 +13,32 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(FFTW REQUIRED fftw3)
+include_directories(${FFTW_INCLUDE_DIRS})
+
 add_library(prach_lib
     lib/math/zc_generator.cpp
     lib/math/zc_fft_property.cpp
     lib/cprefix/cprefix.cpp
     lib/fft/fft.cpp
     lib/fft/ifft.cpp
+    lib/crosscorr/crosscorr.cpp
 )
 
 target_include_directories(prach_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/math
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/cprefix
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/crosscorr
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/fft
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/math
 )
 
 add_executable(example
     src/example.cpp
 )
 
-target_link_libraries(example PRIVATE prach_lib)
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(FFTW REQUIRED fftw3)
-include_directories(${FFTW_INCLUDE_DIRS})
+target_link_libraries(example PRIVATE prach_lib ${FFTW_LIBRARIES})
 
 enable_testing()
 include(FetchContent)

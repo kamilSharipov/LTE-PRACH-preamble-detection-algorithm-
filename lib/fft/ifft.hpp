@@ -6,6 +6,6 @@
 
 namespace prach {
 
-std::vector<Complex> ifft_fftw(const std::vector<Complex>& X);
+std::vector<Complex> ifft_fftw(const std::vector<Complex>& X, size_t N);
 
 } // namespace prach

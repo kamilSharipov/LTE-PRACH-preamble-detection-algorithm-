@@ -5,8 +5,7 @@
 namespace prach {
 
 // IFFT without normalization
-std::vector<Complex> ifft_fftw(const std::vector<Complex>& X) {
-    size_t N = X.size();
+std::vector<Complex> ifft_fftw(const std::vector<Complex>& X, size_t N) {
     fftw_complex* in = fftw_alloc_complex(N);
     fftw_complex* out = fftw_alloc_complex(N);
 
@@ -22,7 +21,7 @@ std::vector<Complex> ifft_fftw(const std::vector<Complex>& X) {
     // Optionally: TODO normalization
     std::vector<Complex> x(N);
     for (size_t i = 0; i < N; ++i) {
-        x[i] = Complex(out[i][0], out[i][1]);
+        x[i] = Complex(out[i][0], out[i][1]) / static_cast<double>(N);
     }
 
     fftw_destroy_plan(plan);
