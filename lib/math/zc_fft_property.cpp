@@ -43,7 +43,6 @@ Complex zc_dft_zero_freq(size_t Nzc, int u) {
     return sum;
 }
 
-
 std::vector<Complex> dft_via_zc_property(size_t Nzc, int u) {
     if (u <= 0 || (size_t)u >= Nzc) {
         throw std::invalid_argument("u must be in [1, Nzc-1]");

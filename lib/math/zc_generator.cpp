@@ -12,7 +12,6 @@ std::vector<Complex> generate_zc_sequence(int u, int Nzc) {
 
     std::vector<Complex> seq(Nzc);
 
-
     for (int n = 0; n < Nzc; ++n) {
         double phase = -PI * u * n * (n + 1) / static_cast<double>(Nzc);
         seq[n] = Complex(cos(phase), sin(phase));
