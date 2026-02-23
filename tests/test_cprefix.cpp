@@ -10,7 +10,7 @@ using namespace prach;
 
 TEST(CPrefixTest, BasicFunctionality) {
     std::vector<Complex> signal = {{1, 0}, {2, 0}, {3, 0}};
-    auto result = add_cyclic_prefix(signal, 2);
+    auto result = insert_cyclic_prefix(signal, 2);
 
     std::vector<Complex> expected = {
         {2, 0}, {3, 0},
@@ -22,14 +22,14 @@ TEST(CPrefixTest, BasicFunctionality) {
 
 TEST(CPrefixTest, ZeroCpLength) {
     std::vector<Complex> signal = {{1, 1}, {2, -1}, {0, 3}};
-    auto result = add_cyclic_prefix(signal, 0);
+    auto result = insert_cyclic_prefix(signal, 0);
 
     EXPECT_TRUE(complex_vectors_near(result, signal));
 }
 
 TEST(CPrefixTest, CpEqualsSignalLength) {
     std::vector<Complex> signal = {{1, 0}, {0, 1}};
-    auto result = add_cyclic_prefix(signal, 2);
+    auto result = insert_cyclic_prefix(signal, 2);
 
     std::vector<Complex> expected = {
         {1, 0}, {0, 1},
@@ -41,12 +41,12 @@ TEST(CPrefixTest, CpEqualsSignalLength) {
 
 TEST(CPrefixTest, EmptySignal) {
     std::vector<Complex> empty;
-    EXPECT_THROW(add_cyclic_prefix(empty, 1), std::invalid_argument);
+    EXPECT_THROW(insert_cyclic_prefix(empty, 1), std::invalid_argument);
 }
 
 TEST(CPrefixTest, CpLongerThanSignal) {
     std::vector<Complex> signal = {{1, 0}, {2, 0}};
-    EXPECT_THROW(add_cyclic_prefix(signal, 5), std::invalid_argument);
+    EXPECT_THROW(insert_cyclic_prefix(signal, 5), std::invalid_argument);
 }
 
 TEST(CPrefixTest, ComplexValues) {
@@ -55,7 +55,7 @@ TEST(CPrefixTest, ComplexValues) {
         Complex(-1.0, 0.5),
         Complex(0.0, -3.0)
     };
-    auto result = add_cyclic_prefix(signal, 1);
+    auto result = insert_cyclic_prefix(signal, 1);
 
     std::vector<Complex> expected = {
         Complex(0.0, -3.0),
@@ -71,7 +71,7 @@ TEST(CPrefixTest, LargePrachLikeCase) {
     const size_t Ncp = 106;
     std::vector<Complex> signal(Nzc, Complex(1.0, 0.0));
 
-    auto result = add_cyclic_prefix(signal, Ncp);
+    auto result = insert_cyclic_prefix(signal, Ncp);
 
     ASSERT_EQ(result.size(), Nzc + Ncp);
 

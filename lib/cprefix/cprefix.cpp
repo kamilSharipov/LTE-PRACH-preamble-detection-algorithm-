@@ -4,7 +4,7 @@
 
 namespace prach {
 
-std::vector<Complex> add_cyclic_prefix(const std::vector<Complex>& signal, 
+std::vector<Complex> insert_cyclic_prefix(const std::vector<Complex>& signal, 
                                        size_t cp_length) {
     if (cp_length == 0) {
         return signal;
