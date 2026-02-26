@@ -25,14 +25,14 @@ std::unique_ptr<PreambleFormat> create_format(FormatType format) {
     switch (format) {
         case FormatType::LTE_FORMAT_0:
             return std::make_unique<LteFormat0>();
-        case FormatType::LTE_FORMAT_1:
-            return std::make_unique<LteFormat1>();
-        case FormatType::LTE_FORMAT_2:
-            return std::make_unique<LteFormat2>();
-        case FormatType::LTE_FORMAT_3:
-            return std::make_unique<LteFormat3>();
-        case FormatType::LTE_FORMAT_4:
-            return std::make_unique<LteFormat4>();
+        // case FormatType::LTE_FORMAT_1:
+        //     return std::make_unique<LteFormat1>();
+        // case FormatType::LTE_FORMAT_2:
+        //     return std::make_unique<LteFormat2>();
+        // case FormatType::LTE_FORMAT_3:
+        //     return std::make_unique<LteFormat3>();
+        // case FormatType::LTE_FORMAT_4:
+        //     return std::make_unique<LteFormat4>();
         default:
             throw std::invalid_argument("lib/prach/generator.hpp: unsupported PRACH format type");
     }
