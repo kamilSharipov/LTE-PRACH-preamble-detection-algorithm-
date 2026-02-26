@@ -27,7 +27,7 @@ inline std::vector<Complex> generate(
 
     std::vector<Complex> time_signal = ifft_fftw(freq_signal, N_dft);
 
-    double scale = static_cast<double>(N_zc) / N_dft;
+    double scale = static_cast<double>(N_dft) / N_zc;
     for (size_t i = 0; i < N_dft; ++i) {
         time_signal[i] *= scale;
     }
