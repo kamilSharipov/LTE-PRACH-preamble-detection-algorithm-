@@ -29,4 +29,27 @@ std::vector<Complex> fft_fftw(const std::vector<Complex>& x, size_t N) {
     return X;
 }
 
+std::vector<Complex> fft_fftw_padded(const std::vector<Complex>& x, size_t N) {
+    if (x.empty()) {
+        throw std::invalid_argument("Input sequence is empty");
+    }
+
+    size_t L = x.size();
+    size_t left_part_size = (L + 1) / 2;
+    size_t right_part_size = L / 2;
+
+    std::vector<Complex> x_padded(N, Complex(0, 0));
+
+    std::copy(x.begin(),
+              x.begin() + left_part_size,
+              x_padded.begin());
+
+    size_t right_start = N - right_part_size;
+    std::copy(x.begin() + left_part_size,
+              x.end(),
+              x_padded.begin() + right_start);
+
+    return fft_fftw(x_padded, N);
+}
+
 } // namespace prach

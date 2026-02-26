@@ -6,6 +6,7 @@
 
 namespace prach {
 
+std::vector<Complex> fft_fftw_padded(const std::vector<Complex>& x, size_t N);
 std::vector<Complex> fft_fftw(const std::vector<Complex>& x, size_t N);
 
 } // namespace prach
