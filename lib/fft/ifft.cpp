@@ -30,4 +30,34 @@ std::vector<Complex> ifft_fftw(const std::vector<Complex>& X, size_t N) {
     return x;
 }
 
+std::vector<Complex> ifft_fftw_padded(const std::vector<Complex>& X, size_t N) {
+    if (X.empty()) {
+        throw std::invalid_argument("Input spectrum is empty");
+    }
+
+    size_t L = X.size();
+    size_t left_part_size = (L + 1) / 2;
+    size_t right_part_size = L / 2;
+
+    std::vector<Complex> X_padded(N, Complex(0, 0));
+
+    std::copy(X.begin(),
+              X.begin() + left_part_size,
+              X_padded.begin());
+
+    size_t right_start = N - right_part_size;
+    std::copy(X.begin() + left_part_size,
+              X.end(),
+              X_padded.begin() + right_start);
+
+    std::vector<Complex> ifft_res = ifft_fftw(X_padded, N);
+
+    double scale = static_cast<double>(N) / L;
+    for (size_t i = 0; i < N; ++i) {
+        ifft_res[i] *= scale;
+    }
+
+    return ifft_res;
+}
+
 } // namespace prach
