@@ -33,6 +33,9 @@ target_include_directories(prach_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/crosscorr
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/fft
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach/format
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach/method
 )
 
 add_executable(example
