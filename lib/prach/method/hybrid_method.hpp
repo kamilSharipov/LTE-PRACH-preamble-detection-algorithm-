@@ -16,21 +16,13 @@ inline std::vector<Complex> generate(
     }
 
     std::vector<Complex> X = dft_via_zc_property(N_zc, static_cast<int>(root_index));
-    std::vector<Complex> freq_signal(N_dft, Complex(0, 0));
+    //std::vector<Complex> freq_signal(864, Complex(0, 0));
+//
+    //constexpr size_t left_zeros = 12;
+//
+    //std::copy(X.begin(), X.end(), freq_signal.begin() + left_zeros);
 
-    constexpr size_t left_zeros = 12;
-    constexpr size_t right_zeros = 13;
-
-    std::copy(X.begin(), X.begin() + 420, freq_signal.begin() + left_zeros);
-    size_t right_start = N_dft - right_zeros - 419;
-    std::copy(X.begin() + 420, X.end(), freq_signal.begin() + right_start);
-
-    std::vector<Complex> time_signal = ifft_fftw(freq_signal, N_dft);
-
-    double scale = static_cast<double>(N_zc) / N_dft;
-    for (size_t i = 0; i < N_dft; ++i) {
-        time_signal[i] *= scale;
-    }
+    std::vector<Complex> time_signal = ifft_fftw_padded(X, N_dft);
 
     return time_signal;
 }

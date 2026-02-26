@@ -22,11 +22,7 @@ public:
 
         std::vector<Complex> signal = hybrid_method::generate(cfg.N_zc, cfg.root_index, 1024);
 
-        // for (int i = 0; i < 24576; ++i) {
-        //     std::cout << signal[i] << "\n";
-        // }
-
-        return signal;//insert_cyclic_prefix(signal, 132);
+        return insert_cyclic_prefix(signal, 132);
     }
 
     std::string name() const override { return "LTE_PRACH_Format0"; }
