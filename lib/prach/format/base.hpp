@@ -9,10 +9,12 @@ namespace prach {
 
 struct PreambleConfig {
     size_t N_zc;
+    size_t N_dft;
+    size_t N_cp;
+    size_t N_gt;
     size_t root_index;
 
     double fs;
-
     size_t N_rb;
 };
 
