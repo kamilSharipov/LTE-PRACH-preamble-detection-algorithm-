@@ -52,10 +52,10 @@ std::vector<Complex> ifft_fftw_padded(const std::vector<Complex>& X, size_t N) {
 
     std::vector<Complex> ifft_res = ifft_fftw(X_padded, N);
 
-    double scale = static_cast<double>(N) / L;
-    for (size_t i = 0; i < N; ++i) {
-        ifft_res[i] *= scale;
-    }
+    //double scale = static_cast<double>(N) / L;
+    //for (size_t i = 0; i < N; ++i) {
+    //    ifft_res[i] *= scale;
+    //}
 
     return ifft_res;
 }

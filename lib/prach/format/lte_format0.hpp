@@ -20,7 +20,7 @@ public:
         //     throw std::invalid_argument("dsfdsfsdf");
         // }
 
-        std::vector<Complex> signal = hybrid_method::generate(cfg.N_zc, cfg.root_index, 1024);
+        std::vector<Complex> signal = hybrid_method::generate(cfg.N_zc, cfg.root_index, cfg.N_dft);
 
         return insert_cyclic_prefix(signal, 132);
     }

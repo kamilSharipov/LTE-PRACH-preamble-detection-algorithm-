@@ -10,7 +10,7 @@ struct ChannelConfig {
     double snr_db = 10.0;
     double delay_sec = 0.0;
     double freq_offset_hz = 0.0;
-    double fs = 1.28e6;
+    double fs = 1.92e6;
 };
 
 class Channel {
