@@ -50,3 +50,6 @@ _build/
 .vscode/
 .idea/
 *.swp
+
+# pictures
+*.png
