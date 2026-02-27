@@ -1,52 +1,35 @@
-#include "fftw3.h"
-
+#include "transceiver.hpp"
 #include <iostream>
-#include <chrono>
-#include <fstream>
-#include <iomanip>
-
-#include "zc_generator.hpp"
-#include "cprefix.hpp"
-#include "zc_fft.property.hpp"
-#include "crosscorr.hpp"
-#include "ifft.hpp"
-#include "fft.hpp"
-
-#include "base.hpp"
-#include "generator.hpp"
 
 using namespace prach;
 
 int main() {
-    try {
-        prach::PreambleConfig cfg;
-        cfg.N_zc = 839;
-        cfg.root_index = 25;
-        cfg.fs = 1.92e6;
+    TransceiverConfig cfg;
 
-        auto format = prach::create_format(prach::FormatType::LTE_FORMAT_0);
-        std::vector<Complex> preamble = format->generate(cfg);
-        auto fft_preamble = fft_fftw(preamble, 1024);
+    cfg.preamble_cfg.N_zc          = 839;
+    cfg.preamble_cfg.N_dft         = 1024;
+    cfg.preamble_cfg.N_cp          = 132;
+    cfg.preamble_cfg.N_gt          = 124;
+    cfg.preamble_cfg.root_index    = 25;
+    cfg.preamble_cfg.fs            = 1.28e6;
 
-        std::vector<Complex> reference = dft_via_zc_property(cfg.N_zc, cfg.root_index);
+    cfg.channel_cfg.snr_db         = -10.0;
+    cfg.channel_cfg.delay_sec      = 10e-6; // 10 мкс
+    cfg.channel_cfg.freq_offset_hz = 0.0;
+    cfg.channel_cfg.fs             = 1.28e6;
 
-        auto res = count_cross_correlation(fft_preamble, reference, 1024);
+    Transceiver trx(cfg);
 
-        for (auto el: res) {
-            std::cout << std::abs(el) << "\n";
-        }   
+    auto tx = trx.transmit();
 
-        {
-            std::ofstream file("corr_phase.txt");
-            file << std::fixed << std::setprecision(10);
-            for (const auto& val : res) {
-                file << std::abs(val) / static_cast<double>(839) << "\n";
-            }
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
-        return 1;
-    }
+    Channel channel(cfg.channel_cfg);
+    auto rx = channel.apply(tx);
+
+    auto result = trx.receive(rx);
+
+    std::cout << "Detected: " << (result.detected ? "YES" : "NO") << "\n";
+    std::cout << "Peak value: " << result.peak_value << "\n";
+    std::cout << "Estimated delay: " << result.estimated_delay_sec * 1e6 << " mks\n";
 
     return 0;
 }
