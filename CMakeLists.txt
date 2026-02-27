@@ -39,7 +39,9 @@ target_include_directories(prach_lib PUBLIC
 )
 
 add_executable(example
-    src/example.cpp
+    src/channel.cpp
+    src/transceiver.cpp
+    example/example.cpp
 )
 
 target_link_libraries(example PRIVATE prach_lib ${FFTW_LIBRARIES})
