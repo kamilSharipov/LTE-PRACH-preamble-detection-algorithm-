@@ -15,14 +15,12 @@ inline std::vector<Complex> generate(
         throw std::invalid_argument("N_zc must be odd and <= N_dft");
     }
 
-    std::vector<Complex> X = dft_via_zc_property(N_zc, static_cast<int>(root_index));
-    //std::vector<Complex> freq_signal(864, Complex(0, 0));
-//
+    std::vector<Complex> freq_signal = dft_via_zc_property(N_zc, static_cast<int>(root_index));
+    //std::vector<Complex> X(864, Complex(0, 0));
     //constexpr size_t left_zeros = 12;
-//
-    //std::copy(X.begin(), X.end(), freq_signal.begin() + left_zeros);
+    //std::copy(freq_signal.begin(), freq_signal.end(), X.begin() + left_zeros);
 
-    std::vector<Complex> time_signal = ifft_fftw_padded(X, N_dft);
+    std::vector<Complex> time_signal = ifft_fftw_padded(freq_signal, N_dft);
 
     return time_signal;
 }
