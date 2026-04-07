@@ -7,7 +7,7 @@
 namespace prach {
 
 std::vector<Complex> Channel::apply(const std::vector<Complex>& tx) const {
-    size_t delay_samples = static_cast<size_t>(cfg_.delay_sec * cfg_.fs);
+    size_t delay_samples = static_cast<size_t>(std::round(cfg_.delay_sec * cfg_.fs));
     std::vector<Complex> rx(delay_samples, Complex(0, 0));
     rx.insert(rx.end(), tx.begin(), tx.end());
 
@@ -18,16 +18,9 @@ std::vector<Complex> Channel::apply(const std::vector<Complex>& tx) const {
         phase += phase_step;
     }
 
-    double signal_power = 0.0;
-    for (const auto& s : tx) {
-        signal_power += std::norm(s);
-    }
-    signal_power /= tx.size();
+    double sigma = std::sqrt(cfg_.noise_var);
+    std::normal_distribution<double> noise_dist(0.0, sigma);
 
-    std::cout << signal_power << "\n";
-
-    double noise_power = signal_power / std::pow(10.0, cfg_.snr_db / 10.0);
-    std::normal_distribution<double> noise_dist(0.0, std::sqrt(noise_power / 2.0));
     std::random_device rd;
     std::seed_seq seed{rd(), rd(), rd(), rd()};
     std::mt19937 gen(seed);
@@ -37,6 +30,10 @@ std::vector<Complex> Channel::apply(const std::vector<Complex>& tx) const {
     }
 
     return rx;
+}
+
+ChannelConfig Channel::get_config() const {
+    return cfg_;
 }
 
 } // namespace prach
