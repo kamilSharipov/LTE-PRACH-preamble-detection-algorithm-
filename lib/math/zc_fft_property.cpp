@@ -53,9 +53,10 @@ std::vector<Complex> dft_via_zc_property(size_t Nzc, int u) {
 
     Complex dft_zero_freq = zc_dft_zero_freq(Nzc, u);
 
+    const double scale = static_cast<double>(Nzc);
     for (size_t i = 0; i < Nzc; ++i) {
         double phase = 2 * modular_inverse(2, Nzc) * PI * (1 - static_cast<double>(new_u)) * static_cast<double>(i) / static_cast<double>(Nzc);
-        result[i] = std::conj(result[i]) * Complex(cos(phase), sin(phase)) * dft_zero_freq;
+        result[i] = std::conj(result[i]) * Complex(cos(phase), sin(phase)) * dft_zero_freq / std::sqrt(scale);
     }
 
     return result;
