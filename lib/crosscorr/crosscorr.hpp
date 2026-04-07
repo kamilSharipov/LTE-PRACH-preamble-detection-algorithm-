@@ -6,8 +6,8 @@
 
 namespace prach {
 
-std::vector<Complex> count_cross_correlation(std::vector<Complex>& x,
-                                             std::vector<Complex>& y,
-                                             size_t N);
+std::vector<Complex> count_cross_correlation(const std::vector<Complex>& x,
+                                             const std::vector<Complex>& y,
+                                             const size_t N);
 
 } // namespace prach
