@@ -25,17 +25,22 @@ add_library(prach_lib
     lib/fft/fft.cpp
     lib/fft/ifft.cpp
     lib/crosscorr/crosscorr.cpp
+    lib/detection/adaptive_threshold_detector.cpp
+    lib/detection/constant_threshold_detector.cpp
 )
 
 target_include_directories(prach_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/detection
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/cprefix
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/crosscorr
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/fft
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/detection
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach/format
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/prach/method
+    ${CMAKE_CURRENT_SOURCE_DIR}/experiments/roc
 )
 
 add_executable(example
@@ -63,3 +68,27 @@ add_executable(tests
 target_link_libraries(tests PRIVATE prach_lib GTest::gtest_main ${FFTW_LIBRARIES})
 
 add_test(NAME tests COMMAND tests)
+
+add_executable(run_true_positive_experiment
+    experiments/true_positive/run_experiments.cpp
+    experiments/true_positive/experiment_runner.cpp
+    src/channel.cpp
+    src/transceiver.cpp
+)
+target_link_libraries(run_true_positive_experiment PRIVATE prach_lib ${FFTW_LIBRARIES})
+
+add_executable(run_roc_experiment 
+    experiments/roc/run_roc_experiment.cpp
+    experiments/roc/roc_experiment.cpp
+    src/channel.cpp
+    src/transceiver.cpp
+)
+target_link_libraries(run_roc_experiment PRIVATE prach_lib ${FFTW_LIBRARIES})
+
+add_executable(run_delay_experiment 
+    experiments/delay/run_delay_estimation.cpp
+    experiments/delay/delay_estimation_experiment.cpp
+    src/channel.cpp
+    src/transceiver.cpp
+)
+target_link_libraries(run_delay_experiment PRIVATE prach_lib ${FFTW_LIBRARIES})
