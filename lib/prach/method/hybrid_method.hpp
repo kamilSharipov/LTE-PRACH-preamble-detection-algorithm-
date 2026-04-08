@@ -3,6 +3,7 @@
 #include "base.hpp"
 #include "zc_fft.property.hpp"
 #include "ifft.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 
@@ -19,21 +20,7 @@ inline std::vector<Complex> generate(
 
     std::vector<Complex> freq_signal = dft_via_zc_property(N_zc, static_cast<int>(root_index));
 
-    size_t L               = freq_signal.size();
-    size_t left_part_size  = (L + 1) / 2;
-    size_t right_part_size = L / 2;
-
-    std::vector<Complex> padded_freq_signal(N_dft, Complex(0, 0));
-
-    std::copy(freq_signal.begin(),
-              freq_signal.begin() + left_part_size,
-              padded_freq_signal.begin());
-
-    size_t right_start = N_dft - right_part_size;
-
-    std::copy(freq_signal.begin() + left_part_size,
-              freq_signal.end(),
-              padded_freq_signal.begin() + right_start);
+    auto padded_freq_signal = add_zero_padding(freq_signal, N_dft);
 
     std::vector<Complex> time_signal = ifft_fftw(padded_freq_signal, N_dft);
 

@@ -3,13 +3,20 @@
 #include "generator.hpp"
 #include "crosscorr.hpp"
 #include "fft.hpp"
+#include "utils.hpp"
 
 namespace prach {
 
 Transceiver::Transceiver(TransceiverConfig cfg, DetectorType detector_type, double param)
     : cfg_(cfg), detector_(DetectorFactory::create(detector_type, param)) 
 {
-    reference_ = dft_via_zc_property(cfg_.preamble_cfg.N_zc, cfg_.preamble_cfg.root_index);
+    auto reference_839 = dft_via_zc_property(cfg_.preamble_cfg.N_zc, cfg_.preamble_cfg.root_index);
+
+    if (cfg_.preamble_cfg.N_dft != STANDART_NZC) {
+        reference_ = add_zero_padding(reference_839, cfg_.preamble_cfg.N_dft);
+    } else {
+        reference_ = reference_839;
+    }
 }
 
 std::vector<Complex> Transceiver::transmit() {
