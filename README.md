@@ -1,20 +1,11 @@
 # LTE PRACH Preamble Generation & Detection Toolkit
 
-This project implements **generation and analysis of PRACH preambles** according to the 3GPP LTE specification (TS 36.211), with a focus on **high performance** and **accurate channel emulation** for research and development of preamble detection algorithms.
+This project implements generation and analysis of PRACH preambles according to the 3GPP LTE specification (TS 36.211) for research and development of preamble detection algorithms.
 
-This is an **academic project**. It is not intended for production use, and may not fully comply with all aspects of the 3GPP LTE standard. Use for learning, experimentation, and algorithm prototyping only.
+This is an academic project. Use for learning, experimentation, and algorithm prototyping only.
 
 ## Key Components
-
-### 1. PRACH Preamble Generator (Implemented)
-- Supports ZC sequence lengths \(N_{\mathrm{ZC}} = 839\) (standard formats) and \(139\) (short preambles).
-- Generates sequences based on root index \(u\) and cyclic shift \(v\).
-- Adds cyclic prefix (CP) according to preamble format (0–3).
-- Direct time-domain generation (TODO).
-
-### 2. Fast DFT of ZC Sequences
-- Implements the analytical formula from Beyme & Leung, *Electronics Letters*, 2009.
-- Complexity: **\(\mathcal{O}(P)\)** vs. \(\mathcal{O}(P \log P)\) with FFT.
+TODO
 
 ## Technology Stack
 
@@ -27,26 +18,19 @@ This is an **academic project**. It is not intended for production use, and may 
 
 ## TODO
 
-### 1. Implement simple examples
-
-### 2. Detection Algorithm & Simulation Model
-- [ ] **a.** Add additive white Gaussian noise for a given SNR.  
-- [ ] **b.** Implement preamble detection algorithm.  
-- [ ] **c.** Evaluate false alarm and miss detection probabilities.  
-- [ ] **d.** Plot probability of correct detection vs. SNR.  
-- [ ] **e.** Estimate time-of-arrival of the preamble.
-
-### 3. Performance Under Frequency Offset
-- [ ] **a.** Analyze mathematically how frequency offset affects correlation peak.  
-- [ ] **b.** Plot detection probability under various frequency offsets.  
-- [ ] **c.** Investigate timing estimation bias caused by frequency offset.  
-- [ ] **d.** Explore frequency offset compensation for preamble formats with two repeated sequences.
-
-### Multi-User Scenario Evaluation
-- [ ] **a.** Evaluate false alarm probability when multiple preambles (different roots/shifts) are present.  
-- [ ] **b.** Plot detection probability for two simultaneously transmitted preambles.
-
 ## Getting Started
+
+### Prerequisites
+
+```bash
+# Ubuntu/Debian
+sudo apt-get install cmake build-essential libfftw3-dev python3 python3-pip
+
+# Python dependencies for plotting
+pip3 install pandas matplotlib numpy
+```
+
+### Build
 
 ```bash
 git clone https://github.com/kamilSharipov/LTE-PRACH-preamble-detection-algorithm-.git
@@ -61,4 +45,15 @@ make -j$(nproc)
 ./example
 
 # Run tests
-ctest --output-on-failure
+ctest --output-on-failure --verbose
+```
+### ROC Experiment
+```bash
+cd build
+
+# Run ROC experiment (generates CSV data files)
+make run_roc
+
+# Generate ROC plots from existing data
+make plot_roc
+```

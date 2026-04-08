@@ -3,6 +3,9 @@
 #include "base.hpp"
 #include "zc_fft.property.hpp"
 #include "ifft.hpp"
+#include "utils.hpp"
+
+#include <iostream>
 
 namespace prach::hybrid_method {
 
@@ -16,11 +19,10 @@ inline std::vector<Complex> generate(
     }
 
     std::vector<Complex> freq_signal = dft_via_zc_property(N_zc, static_cast<int>(root_index));
-    //std::vector<Complex> X(864, Complex(0, 0));
-    //constexpr size_t left_zeros = 12;
-    //std::copy(freq_signal.begin(), freq_signal.end(), X.begin() + left_zeros);
 
-    std::vector<Complex> time_signal = ifft_fftw_padded(freq_signal, N_dft);
+    auto padded_freq_signal = add_zero_padding(freq_signal, N_dft);
+
+    std::vector<Complex> time_signal = ifft_fftw(padded_freq_signal, N_dft);
 
     return time_signal;
 }

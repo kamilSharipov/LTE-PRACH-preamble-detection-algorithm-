@@ -1,19 +1,19 @@
 #include "crosscorr.hpp"
 #include "fft.hpp"
 #include "ifft.hpp"
-#include "zc_fft.property.hpp"
+
+#include <iostream>
 
 namespace prach {
 
-std::vector<Complex> count_cross_correlation(std::vector<Complex>& x,
-                                             std::vector<Complex>& y,
-                                             size_t N) {
-    std::vector<Complex> fft_x = fft_fftw_padded(x, N);
-    std::vector<Complex> fft_y = fft_fftw_padded(y, N);
+std::vector<Complex> count_cross_correlation(const std::vector<Complex>& x,
+                                             const std::vector<Complex>& y,
+                                             const size_t N) 
+{
     std::vector<Complex> res(N);
 
     for (size_t i = 0; i < N; i++) {
-        res[i] = fft_x[i] * std::conj(fft_y[i]);
+        res[i] = x[i] * std::conj(y[i]);
     }
 
     std::vector<Complex> ifft_res = ifft_fftw(res, N);

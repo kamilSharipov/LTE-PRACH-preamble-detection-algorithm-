@@ -2,14 +2,15 @@
 #include "crosscorr.hpp"
 #include "test_utils.hpp"
 #include "zc_generator.hpp"
+#include "fft.hpp"
 
 #include <gtest/gtest.h>
 
 using namespace prach;
 
-std::vector<Complex> count_cross_correlation_naive(std::vector<Complex>& x, 
-                                            std::vector<Complex>& y) {
-    size_t N = x.size();
+std::vector<Complex> count_cross_correlation_naive(const std::vector<Complex>& x, 
+                                                   const std::vector<Complex>& y) {
+    const size_t N = x.size();
     std::vector<Complex> res(N, Complex{0, 0});
 
     for (size_t lag = 0; lag < N; ++lag) {
@@ -20,9 +21,9 @@ std::vector<Complex> count_cross_correlation_naive(std::vector<Complex>& x,
             sum += x[n] * std::conj(y[m]); 
         }
 
-        res[lag] = sum;
+        res[lag] = sum / std::sqrt(N);
     }
-    
+
     return res;
 }
 
@@ -47,15 +48,16 @@ TEST(CrossCorrTest, AutoCorrelationPeakAtZero) {
     }
 
     EXPECT_EQ(max_index, 0);
-    EXPECT_NEAR(std::abs(corr[0]), static_cast<double>(Nzc), 1e-6);
+    EXPECT_NEAR(std::abs(corr[0]), std::sqrt(static_cast<double>(Nzc)), 1e-6);
 }
 
 TEST(CrossCorrTest, MatchesNaiveAutoCorrelation) {
     const size_t Nzc = 839;
     const int u = 25;
     auto x = generate_zc_sequence(u, Nzc);
+    auto fft_x = fft_fftw(x, Nzc);
 
-    auto fft_corr = count_cross_correlation(x, x, Nzc);
+    auto fft_corr = count_cross_correlation(fft_x, fft_x, Nzc);
     auto naive_corr = count_cross_correlation_naive(x, x);
 
     ASSERT_TRUE(complex_vectors_near(fft_corr, naive_corr, 1e-8));
@@ -67,7 +69,10 @@ TEST(CrossCorrTest, MatchesNaiveCrossCorrelation) {
     auto x = generate_zc_sequence(u1, Nzc);
     auto y = generate_zc_sequence(u2, Nzc);
 
-    auto fft_corr = count_cross_correlation(x, y, Nzc);
+    auto fft_x = fft_fftw(x, Nzc);
+    auto fft_y = fft_fftw(y, Nzc);
+
+    auto fft_corr = count_cross_correlation(fft_x, fft_y, Nzc);
     auto naive_corr = count_cross_correlation_naive(x, y);
 
     ASSERT_TRUE(complex_vectors_near(fft_corr, naive_corr, 1e-8));

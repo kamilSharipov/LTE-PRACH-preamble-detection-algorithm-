@@ -53,3 +53,5 @@ _build/
 
 # pictures
 *.png
+
+scripts/
