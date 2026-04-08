@@ -13,23 +13,24 @@ int main() {
     cfg.preamble_cfg.root_index    = 25;
     cfg.preamble_cfg.fs            = 1.28e6;
 
-    cfg.channel_cfg.snr_db         = -10.0;
-    cfg.channel_cfg.delay_sec      = 10e-6; // 10 мкс
+    cfg.channel_cfg.noise_var      = 0.0;
+    cfg.channel_cfg.delay_sec      = 0e-6;;
     cfg.channel_cfg.freq_offset_hz = 0.0;
-    cfg.channel_cfg.fs             = 1.28e6;
+    cfg.channel_cfg.fs             = cfg.preamble_cfg.fs;
 
-    Transceiver trx(cfg);
+    Transceiver trx(cfg, DetectorType::ADAPTIVE_THRESHOLD, 4.25);
 
     auto tx = trx.transmit();
 
     Channel channel(cfg.channel_cfg);
     auto rx = channel.apply(tx);
 
-    auto result = trx.receive(rx);
+    auto res = trx.receive(rx);
 
-    std::cout << "Detected: " << (result.detected ? "YES" : "NO") << "\n";
-    std::cout << "Peak value: " << result.peak_value << "\n";
-    std::cout << "Estimated delay: " << result.estimated_delay_sec * 1e6 << " mks\n";
+    std::cout << "\n=== Adaptive Threshold ===\n";
+    std::cout << "Detected: " << (res.detected ? "YES" : "NO") << "\n";
+    std::cout << "Peak value: " << res.peak_value << "\n";
+    std::cout << "Estimated delay: " << res.estimated_delay_sec * 1000 * 1000 << "\n";
 
     return 0;
 }
