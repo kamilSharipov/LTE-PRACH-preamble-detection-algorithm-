@@ -55,7 +55,8 @@ std::pair<double, double> RocExperiment::compute_pfa_pd(double noise_var, double
     auto tx_signal = trx.transmit();
 
     std::random_device rd;
-    std::mt19937 gen(rd());
+    std::mt19937 noise_gen(rd());
+    std::mt19937 delay_gen(rd());
 
     double sigma = std::sqrt(noise_var / 2.0);
     std::normal_distribution<double> noise_dist(0.0, sigma);
@@ -66,7 +67,7 @@ std::pair<double, double> RocExperiment::compute_pfa_pd(double noise_var, double
         std::vector<Complex> rx(signal_len);
 
         for (auto& sample : rx) {
-            sample = Complex(noise_dist(gen), noise_dist(gen));
+            sample = Complex(noise_dist(noise_gen), noise_dist(noise_gen));
         }
 
         auto result = trx.receive(rx);
@@ -76,6 +77,15 @@ std::pair<double, double> RocExperiment::compute_pfa_pd(double noise_var, double
     }
 
     for (size_t i = 0; i < cfg_.num_trials; ++i) {
+        ChannelConfig channel_cfg = trx.get_config().channel_cfg;
+
+        if (cfg_.max_delay_us > 0.0) {
+            std::uniform_real_distribution<double> delay_dist(0.0, cfg_.max_delay_us);
+
+            double delay_us = delay_dist(delay_gen);
+            channel_cfg.delay_sec = delay_us * 1e-6;
+        }
+
         Channel channel(trx.get_config().channel_cfg);
     
         auto rx = channel.apply(tx_signal);

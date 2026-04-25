@@ -8,8 +8,8 @@ int main() {
     
     prach::RocExperiment::Config cfg;
 
-    cfg.num_trials       = 10000;
-    cfg.noise_var_values = {48.0};
+    cfg.num_trials       = 1000;
+    cfg.noise_var_values = {2 * 48.0};
     cfg.threshold_params = {
         1.0, 1.25, 1.5, 1.75,
         2.0, 2.25, 2.5, 2.75,
@@ -25,6 +25,8 @@ int main() {
 
         cfg.preamble_length    = plen;
         cfg.output_file_prefix = "roc_N" + std::to_string(plen);
+
+        cfg.max_delay_us = 10.0;
 
         prach::Transceiver::precalibrate_noise(
             (plen == 839) ? 839 : (plen == 1024) ? 1024 : 2048,
