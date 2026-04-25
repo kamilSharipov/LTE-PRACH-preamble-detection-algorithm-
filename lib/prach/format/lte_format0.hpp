@@ -16,19 +16,9 @@ public:
             throw std::invalid_argument("dsfsdf");
         }
 
-        // if (cfg.fs != 1.92e6) {
-        //     throw std::invalid_argument("dsfdsfsdf");
-        // }
-
         std::vector<Complex> signal = hybrid_method::generate(cfg.N_zc, cfg.root_index, cfg.N_dft);
-
+        
         auto vec =  insert_cyclic_prefix(signal, cfg.N_cp);
-
-        //double energy = 0.0;
-        //for (auto i : vec) {
-        //    energy += std::norm(i);
-        //}
-        //std::cout << energy / (1024 + 132) << "\n";
 
         return vec;
     }

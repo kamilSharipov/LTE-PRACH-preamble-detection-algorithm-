@@ -11,22 +11,15 @@ std::vector<Complex> Channel::apply(const std::vector<Complex>& tx) const {
     std::vector<Complex> rx(delay_samples, Complex(0, 0));
     rx.insert(rx.end(), tx.begin(), tx.end());
 
-    double phase = 0.0;
-    double phase_step = 2.0 * PI * cfg_.freq_offset_hz / cfg_.fs;
-    for (auto& s : rx) {
-        s *= Complex(std::cos(phase), std::sin(phase));
-        phase += phase_step;
-    }
-
-    double sigma = std::sqrt(cfg_.noise_var);
+    double sigma = std::sqrt(cfg_.noise_var / 2.0);
     std::normal_distribution<double> noise_dist(0.0, sigma);
 
     std::random_device rd;
     std::seed_seq seed{rd(), rd(), rd(), rd()};
     std::mt19937 gen(seed);
 
-    for (auto& s : rx) {
-        s += Complex(noise_dist(gen), noise_dist(gen));
+    for (auto& sample : rx) {
+        sample += Complex(noise_dist(gen), noise_dist(gen));
     }
 
     return rx;

@@ -49,7 +49,7 @@ for file in sorted(files):
 
 print(f"Processing {len(curves_info)} valid curves")
 
-curve_ids = [f"N={N}, σ²={noise_var:.0f}" for N, noise_var, _ in curves_info]
+curve_ids = [f"N_dft={N}, noise_variance={noise_var:.0f}" for N, noise_var, _ in curves_info]
 color_map = get_color_map(curve_ids)
 
 plotted_combinations = set()
@@ -66,14 +66,14 @@ for N, noise_var, file in curves_info:
 
     style = N_STYLES[N]
 
-    label = f"N={N}, σ²={noise_var:.0f}"
+    label = f"N_dft={N}, noise_variance={noise_var:.0f}"
 
     if (N, noise_var) not in plotted_combinations:
         plotted_combinations.add((N, noise_var))
     else:
         label = None
 
-    color = color_map[label if label else f"N={N}, σ²={noise_var:.0f}"]
+    color = color_map[label if label else f"N_dft={N}, noise_variance={noise_var:.0f}"]
 
     plt.plot(df['pfa'], df['pd'],
              linestyle=style['linestyle'],
@@ -86,7 +86,7 @@ for N, noise_var, file in curves_info:
 
 plt.xlabel('PFA (Probability of False Alarm)', fontsize=14, fontweight='bold')
 plt.ylabel('PD (Probability of Detection)', fontsize=14, fontweight='bold')
-plt.title('ROC Curves for Different Preamble Lengths and Noise Variance',
+plt.title('ROC Curves for different N_dft',
           fontsize=16, fontweight='bold')
 
 handles, labels = plt.gca().get_legend_handles_labels()

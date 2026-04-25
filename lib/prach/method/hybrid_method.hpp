@@ -19,8 +19,7 @@ inline std::vector<Complex> generate(
     }
 
     std::vector<Complex> freq_signal = dft_via_zc_property(N_zc, static_cast<int>(root_index));
-
-    auto padded_freq_signal = add_zero_padding(freq_signal, N_dft);
+    auto padded_freq_signal          = add_zero_padding(freq_signal, N_dft);
 
     std::vector<Complex> time_signal = ifft_fftw(padded_freq_signal, N_dft);
 

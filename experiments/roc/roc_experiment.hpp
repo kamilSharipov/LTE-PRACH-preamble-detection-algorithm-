@@ -20,6 +20,7 @@ public:
         DetectorType detector_type;
         std::string output_file_prefix = "roc_results";
         int preamble_length = 839;
+        double max_delay_us = 0.0;
     };
 
     explicit RocExperiment(Config cfg) : cfg_(cfg) {}
