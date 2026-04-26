@@ -1,12 +1,29 @@
 #include "roc_experiment.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <random>
 #include <iomanip>
 #include <filesystem>
+#include <cmath>
 
 namespace prach {
+
+static std::vector<Complex> decimate(const std::vector<Complex>& signal, int factor) {
+    if (factor <= 1) {
+        return signal;
+    }
+
+    std::vector<Complex> out;
+    out.reserve(signal.size() / factor + 1);
+
+    for (size_t i = 0; i < signal.size(); i += factor) {
+        out.push_back(signal[i]);
+    }
+
+    return out;
+}
 
 Transceiver RocExperiment::create_transceiver(double noise_var, double threshold_param) {
     TransceiverConfig cfg;
@@ -51,54 +68,102 @@ std::pair<double, double> RocExperiment::compute_pfa_pd(double noise_var, double
     size_t fp_count = 0;
     size_t tp_count = 0;
 
-    auto trx = create_transceiver(noise_var, threshold_param);
-    auto tx_signal = trx.transmit();
+    const int N_dft_tx = 8192;
+    const int N_dft_rx = cfg_.preamble_length;
+    const int M = N_dft_tx / N_dft_rx;
 
-    std::random_device rd;
-    std::mt19937 noise_gen(rd());
-    std::mt19937 delay_gen(rd());
+    auto trx_rx = create_transceiver(noise_var, threshold_param);
+    auto rx_cfg = trx_rx.get_config();
 
-    double sigma = std::sqrt(noise_var / 2.0);
-    std::normal_distribution<double> noise_dist(0.0, sigma);
+    std::random_device rd_noise, rd_delay;
+    std::mt19937 gen_noise(rd_noise());
+    std::mt19937 gen_delay(rd_delay());
 
-    size_t signal_len = tx_signal.size();
+    double sigma_rx = std::sqrt(noise_var / 2.0);
+    std::normal_distribution<double> noise_dist_rx(0.0, sigma_rx);
+    std::uniform_real_distribution<double> delay_dist_us(0.0, cfg_.max_delay_us);
 
-    for (size_t i = 0; i < cfg_.num_trials; ++i) {
-        std::vector<Complex> rx(signal_len);
+    const size_t rx_buf_len = rx_cfg.preamble_cfg.N_cp + rx_cfg.preamble_cfg.N_dft;
+    const double fs_tx = rx_cfg.preamble_cfg.fs * M;
 
-        for (auto& sample : rx) {
-            sample = Complex(noise_dist(noise_gen), noise_dist(noise_gen));
-        }
+    // TX сигнал на высокой частоте
+    auto tx_cfg = rx_cfg;
+    tx_cfg.preamble_cfg.N_dft = N_dft_tx;
+    tx_cfg.preamble_cfg.N_cp = rx_cfg.preamble_cfg.N_cp * M;
+    tx_cfg.preamble_cfg.N_gt = rx_cfg.preamble_cfg.N_gt * M;
+    tx_cfg.preamble_cfg.fs = fs_tx;
 
-        auto result = trx.receive(rx);
-        if (result.detected) {
-            fp_count++;
-        }
+    auto trx_tx = Transceiver(tx_cfg, cfg_.detector_type, threshold_param);
+    auto tx_signal = trx_tx.transmit();
+    for (auto& el: tx_signal) {
+        el *= std::sqrt(8192.0 / N_dft_rx);
     }
 
+    // Калибровка шума для порога (для длины приёмника)
+    double mean_noise_amp = Transceiver::get_calibrated_noise(
+        N_dft_tx, 839, 25, noise_var
+    );
+    mean_noise_amp *= std::sqrt(M);
+
+    // === False Positive: шум на частоте приёмника ===
     for (size_t i = 0; i < cfg_.num_trials; ++i) {
-        ChannelConfig channel_cfg = trx.get_config().channel_cfg;
+        std::vector<Complex> noise(rx_buf_len);
+        for (auto& s : noise) {
+            s = Complex(noise_dist_rx(gen_noise), noise_dist_rx(gen_noise));
+        }
+        auto res = trx_rx.receive(noise);
+        if (res.detected) fp_count++;
+    }
 
+    // === True Positive: сигнал + Channel(задержка) + децимация + шум ===
+    for (size_t i = 0; i < cfg_.num_trials; ++i) {
+        // 1. Задержка через Channel на высокой частоте (без шума)
+        ChannelConfig ch_cfg;
+        ch_cfg.fs = fs_tx;
+        ch_cfg.noise_var = noise_var;  // шум добавим позже на частоте приёмника
+        ch_cfg.freq_offset_hz = 0.0;
+        
         if (cfg_.max_delay_us > 0.0) {
-            std::uniform_real_distribution<double> delay_dist(0.0, cfg_.max_delay_us);
+            double delay_us = delay_dist_us(gen_delay);
+            ch_cfg.delay_sec = delay_us * 1e-6;
+        } else {
+            ch_cfg.delay_sec = 0.0;
+        }
+        
+        Channel channel_tx(ch_cfg);
+        auto delayed_tx = channel_tx.apply(tx_signal);
 
-            double delay_us = delay_dist(delay_gen);
-            channel_cfg.delay_sec = delay_us * 1e-6;
+        // 2. Децимация до частоты приёмника
+        auto rx_signal = decimate(delayed_tx, M);
+
+        // 3. Приводим к ожидаемой длине буфера
+        if (rx_signal.size() < rx_buf_len) {
+            rx_signal.resize(rx_buf_len, Complex(0, 0));
+        } else if (rx_signal.size() > rx_buf_len) {
+            rx_signal.resize(rx_buf_len);
         }
 
-        Channel channel(trx.get_config().channel_cfg);
-    
-        auto rx = channel.apply(tx_signal);
-        auto result = trx.receive(rx);
+        // 4. Добавляем шум на частоте приёмника
+        //for (auto& s : rx_signal) {
+        //    s += Complex(noise_dist_rx(gen_noise), noise_dist_rx(gen_noise));
+        //}
 
-        if (result.detected) {
-            tp_count++;
+        // 5. Детектирование
+        auto res = trx_rx.receive(rx_signal);
+        if (res.detected) tp_count++;
+
+        if (i == 0) {
+            std::cerr << "[DEBUG] N_dft_rx=" << N_dft_rx 
+                      << " | M=" << M
+                      << " | peak_value=" << res.peak_value
+                      << " | mean_noise_amp=" << mean_noise_amp
+                      << " | threshold=" << mean_noise_amp * threshold_param
+                      << "\n";
         }
     }
 
     double pfa = static_cast<double>(fp_count) / cfg_.num_trials;
-    double pd  = static_cast<double>(tp_count) / cfg_.num_trials;
-
+    double pd = static_cast<double>(tp_count) / cfg_.num_trials;
     return {pfa, pd};
 }
 

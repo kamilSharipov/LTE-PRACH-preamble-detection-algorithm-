@@ -4,11 +4,11 @@
 #include <vector>
 
 int main() {
-    std::vector<int> preamble_lengths = {839, 1024, 2048};
+    std::vector<int> preamble_lengths = {1024, 2048};
     
     prach::RocExperiment::Config cfg;
 
-    cfg.num_trials       = 1000;
+    cfg.num_trials       = 10000;
     cfg.noise_var_values = {2 * 48.0};
     cfg.threshold_params = {
         1.0, 1.25, 1.5, 1.75,
@@ -18,6 +18,7 @@ int main() {
         5.0, 5.25, 5.5, 5.75, 
         6.0
     };
+    //cfg.threshold_params = { 4.25 };
     cfg.detector_type = prach::DetectorType::ADAPTIVE_THRESHOLD;
 
     for (int plen : preamble_lengths) {
@@ -26,12 +27,14 @@ int main() {
         cfg.preamble_length    = plen;
         cfg.output_file_prefix = "roc_N" + std::to_string(plen);
 
-        cfg.max_delay_us = 10.0;
+        cfg.use_resampling      = true;
+        cfg.oversampling_factor = 4;
+        cfg.max_delay_us        = 10.0;
 
-        prach::Transceiver::precalibrate_noise(
-            (plen == 839) ? 839 : (plen == 1024) ? 1024 : 2048,
-            839, 30, 49.0
-        );
+        //prach::Transceiver::precalibrate_noise(
+        //    (plen == 839) ? 839 : (plen == 1024) ? 1024 : 2048,
+        //    839, 30, 49.0
+        //);
 
         prach::RocExperiment experiment(cfg);
         experiment.run();

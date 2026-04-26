@@ -121,13 +121,16 @@ DetectionResult Transceiver::receive(const std::vector<Complex>& rx_signal) {
     file.close();
 
     double mean_noise_amplitude = get_calibrated_noise(
-        N_dft,
+        8192, // ВРЕМЕННО!!!!!!
         cfg_.preamble_cfg.N_zc,
         cfg_.preamble_cfg.root_index,
         cfg_.channel_cfg.noise_var
     );
-    
+
+    mean_noise_amplitude *= std::sqrt(8192.0 / static_cast<double>(N_dft));
+
     return detector_->detect(corr_main, fs, mean_noise_amplitude);
+    //return detector_->detect(corr_main, fs, -1);
 }
 
 TransceiverConfig Transceiver::get_config() const {
