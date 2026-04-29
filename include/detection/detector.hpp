@@ -18,8 +18,10 @@ public:
     virtual ~AbstractDetector() = default;
     virtual DetectionResult detect(
         const std::vector<Complex>& correlation,
-        const double fs
+        const double fs,
+        double external_noise_amplitude = -1.0
     ) = 0;
+    virtual double get_coefficient() const = 0;
 };
 
 } // namespace prach

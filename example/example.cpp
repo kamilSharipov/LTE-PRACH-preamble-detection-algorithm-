@@ -14,7 +14,7 @@ int main() {
     cfg.preamble_cfg.fs            = 1.28e6;
 
     cfg.channel_cfg.noise_var      = 0.0;
-    cfg.channel_cfg.delay_sec      = 0e-6;;
+    cfg.channel_cfg.delay_sec      = 50e-6;
     cfg.channel_cfg.freq_offset_hz = 0.0;
     cfg.channel_cfg.fs             = cfg.preamble_cfg.fs;
 

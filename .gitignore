@@ -55,3 +55,6 @@ _build/
 *.png
 
 scripts/
+experiments/roc/data
+experiments/delay
+experiments/true_positive

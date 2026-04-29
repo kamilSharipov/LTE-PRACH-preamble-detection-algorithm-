@@ -21,10 +21,17 @@ public:
 
     TransceiverConfig get_config() const;
 
+    static void precalibrate_noise(size_t N_dft, size_t N_zc, int root_index, double noise_var);
+
+    static double get_calibrated_noise(size_t N_dft, size_t N_zc, int root_index, double noise_var);
+
 private:
     TransceiverConfig                 cfg_;
     std::vector<Complex>              reference_;
     std::unique_ptr<AbstractDetector> detector_;
+
+    std::vector<Complex> noise_reference_;
+    size_t noise_root_index_;
 };
 
 } // namespace prach

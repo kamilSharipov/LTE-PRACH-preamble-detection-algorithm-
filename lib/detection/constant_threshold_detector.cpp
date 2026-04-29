@@ -6,7 +6,8 @@ namespace prach {
 
 DetectionResult ConstantThresholdDetector::detect(
     const std::vector<Complex>& correlation,
-    const double fs)
+    const double fs,
+    [[maybe_unused]]double external_noise_amplitude)
 {
     DetectionResult res;
 
@@ -23,5 +24,7 @@ DetectionResult ConstantThresholdDetector::detect(
 
     return res;
 }
+
+double ConstantThresholdDetector::get_coefficient() const { return threshold_; }
 
 } // namespace prach

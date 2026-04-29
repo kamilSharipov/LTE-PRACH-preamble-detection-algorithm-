@@ -11,8 +11,10 @@ public:
 
     DetectionResult detect(
         const std::vector<Complex>& correlation,
-        const double fs
+        const double fs,
+        double external_noise_amplitude = -1.0
     ) override;
+    double get_coefficient() const override;
 
 private:
     double threshold_;

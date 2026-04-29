@@ -11,8 +11,12 @@ public:
 
     DetectionResult detect(
         const std::vector<Complex>& correlation,
-        const double fs
+        const double fs,
+        double external_noise_amplitude = -1.0
     ) override;
+
+    double compute_median(std::vector<double> values);
+    double get_coefficient() const override;
 
 private:
     double coefficient_;
